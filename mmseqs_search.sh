@@ -7,6 +7,11 @@
 #SBATCH --cpus-per-task=8
 #SBATCH --partition=Node3
 
+# 아래 코드로 구성된 파이썬 파일 생성 시 다음의 명령어를 통해 실행 권한을 부여한다: chmod +x filter_m8_by_identity_multi.py [여기서 파일명은 'filter_m8_by_identity_multi.py']
+# 스크립트 실행 시 아래와 같이 커맨드를 입력한다
+# 1. E2_result.m8 샘플 하나만 수행: python filter_m8_by_identity_multi.py E2_result.m8
+# 2. 복수의 샘플에 대해 수행: python filter_m8_by_identity_multi.py E2_result.m8 E3_result.m8 E6_result.m8
+
 # 입력 변수
 sample=$1
 if [ -z "$sample" ]; then
