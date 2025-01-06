@@ -7,10 +7,9 @@
 #SBATCH --cpus-per-task=8
 #SBATCH --partition=Node3
 
-# 아래 코드로 구성된 파이썬 파일 생성 시 다음의 명령어를 통해 실행 권한을 부여한다: chmod +x filter_m8_by_identity_multi.py [여기서 파일명은 'filter_m8_by_identity_multi.py']
+# 본 스크립트는 각 샘플마다 개별(병렬)적으로 분석을 수행하기 위해 단일 샘플을 위해 작성되었다.
 # 스크립트 실행 시 아래와 같이 커맨드를 입력한다
-# 1. E2_result.m8 샘플 하나만 수행: python filter_m8_by_identity_multi.py E2_result.m8
-# 2. 복수의 샘플에 대해 수행: python filter_m8_by_identity_multi.py E2_result.m8 E3_result.m8 E6_result.m8
+# sbatch mmseqs_search.sh E2 (E2는 raw data의 샘플명에 해당한다. raw data의 full name은 시퀀싱 기관에 따라 상이할 수 있기에 아래 1번 단계의 양식을 유의하라)
 
 # 입력 변수
 sample=$1
@@ -33,7 +32,7 @@ ref_db=/storage2/jihoonkim/eDNA/data/co1/cox1_refDB  # Reference DB (MMseqs2 형
 mkdir -p $processed_data_dir $results_dir $tmp_dir
 
 # 1. Paired-End 데이터 병합
-echo "==> Merging paired-end reads for sample: $sample"
+echo "==> Merging paired-end reads for sample: $sample"  # 아래 .fastq.gz 형식의 raw data는 시퀀싱 기관으로부터 받은 것이며, 기관마다 해당 이름들의 양식이 상이할 수 있기에, 경우에 따라 아래 코드를 수정할 필요가 있다.현재 기준 SNU NICEM
 R1=$(find $raw_data_dir -name "${sample}_S*_R1_001.fastq.gz")
 R2=$(find $raw_data_dir -name "${sample}_S*_R2_001.fastq.gz")
 merged_prefix=${processed_data_dir}/${sample}_merged
