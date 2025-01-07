@@ -22,12 +22,12 @@ fi
 start_time=$(date +%s)
 
 # 디렉토리 설정
-work_dir=/storage2/jihoonkim/eDNA/analysis/1_20250104
-raw_data_dir=${work_dir}/raw_data
+work_dir=/storage2/jihoonkim/eDNA/analysis/2_20250106  # 사전에 만들어진 워킹 디렉토리
+raw_data_dir=${work_dir}/raw_data                      # 사전에 만들어진 raw data 디렉토리
 processed_data_dir=${work_dir}/processed_data
 results_dir=${work_dir}/results
 tmp_dir=${work_dir}/tmp
-ref_db=/storage2/jihoonkim/eDNA/data/co1/cox1_refDB  # Reference DB (MMseqs2 형식)
+ref_db=/storage2/jihoonkim/eDNA/mmseqs/cox1/cox1_refDB  # Reference DB (MMseqs2 형식)
 
 mkdir -p $processed_data_dir $results_dir $tmp_dir
 
