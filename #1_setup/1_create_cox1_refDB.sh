@@ -36,7 +36,7 @@ MMSEQS_COX1_DIR="$MMSEQS_DIR/cox1"               # MMseqs2 Cox1 DB 디렉토리
 # ================================
 GENBANK_FILE="$COX1_DIR/cox1_sequences.gb"       # GenBank 형식 파일
 FASTA_FILE="$COX1_DIR/cox1_sequences_with_taxid.fasta" # FASTA 파일
-MMSEQS_DB="$MMSEQS_COX1_DIR/cox1_refDB"         # MMseqs2 전용 DB
+MMSEQS_DB="$MMSEQS_COX1_DIR/cox1_refDB"          # MMseqs2 전용 DB
 
 # ================================
 # 작업 시작 시간 기록
