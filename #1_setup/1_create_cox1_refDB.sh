@@ -4,7 +4,23 @@
 #SBATCH -n 4
 #SBATCH --time=UNLIMITED
 
-# taxonomy ID를 포함한 NCBI cox1 nt DB 생성 및 MMseqs2 전용 변환
+# 1_create_cox1_refDB.sh
+# 설명:
+# 이 스크립트는 NCBI에서 Cox1 유전자 서열 데이터를 다운로드하고, Taxonomy ID를 포함한 FASTA 파일로 변환한 뒤, MMseqs2 전용 참조 데이터베이스를 생성합니다.
+
+# 주요 작업:
+# 1. Cox1 유전자 데이터(GenBank 형식)를 NCBI EDirect 도구를 사용해 다운로드.
+# 2. Python 스크립트를 사용하여 Taxonomy ID와 서열 데이터를 포함한 FASTA 파일 생성.
+# 3. MMseqs2의 createdb 명령어를 사용하여 Cox1 데이터베이스 생성.
+
+# 1_create_cox1_refDB.sh
+# Description:
+# This script downloads Cox1 gene sequence data from NCBI, converts it into a FASTA file with Taxonomy IDs, and generates an MMseqs2-compatible reference database.
+
+# Key Tasks:
+# 1. Download Cox1 gene data (in GenBank format) using the NCBI EDirect tool.
+# 2. Use a Python script to generate a FASTA file with Taxonomy IDs and sequence data.
+# 3. Create a Cox1 database using the MMseqs2 `createdb` command.
 
 # ================================
 # 기본 경로 설정
