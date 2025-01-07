@@ -31,8 +31,8 @@ BASE_DIR="/storage2/jihoonkim/eDNA"              # 기본 디렉토리
 NCBI_DIR="$BASE_DIR/ncbi"                        # NCBI 데이터 디렉토리
 NCBI_TAX_DUMP="$NCBI_DIR/taxonomy"               # NCBI Taxonomy 디렉토리
 MMSEQS_DIR="$BASE_DIR/mmseqsDB"                  # MMseqs2 디렉토리
-COX1_DB="$MMSEQS_DIR/mmseqs_cox1/cox1_refDB"            # MMseqs2 Cox1 DB
-TAXONOMY_DB="$MMSEQS_DIR/mmseqs_taxDB"  # MMseqs2 Taxonomy DB
+COX1_DB="$MMSEQS_DIR/mmseqs_cox1/cox1_refDB"     # MMseqs2 Cox1 DB
+TAXONOMY_DB="$MMSEQS_DIR/mmseqs_taxDB"           # MMseqs2 Taxonomy DB
 
 # ================================
 # 작업 시작 시간 기록
