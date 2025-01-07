@@ -1,8 +1,8 @@
 #!/bin/sh
-#SBATCH -J cox1_db
-#SBATCH -p Node7
-#SBATCH -n 4
-#SBATCH --time=UNLIMITED
+#SBATCH -J cox1_db                    # 작업 이름
+#SBATCH -p Node7                      # 실행 노드
+#SBATCH -n 4                          # 사용 CPU 수
+#SBATCH --time=UNLIMITED              # 실행 시간 제한 없음
 
 # 1_create_cox1_refDB.sh
 # 설명:
