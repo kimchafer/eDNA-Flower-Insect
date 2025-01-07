@@ -27,7 +27,7 @@ raw_data_dir=${work_dir}/raw_data                      # 사전에 만들어진 
 processed_data_dir=${work_dir}/processed_data
 results_dir=${work_dir}/results
 tmp_dir=${work_dir}/tmp
-ref_db=/storage2/jihoonkim/eDNA/mmseqs/cox1/cox1_refDB  # Reference DB (MMseqs2 형식)
+ref_db=/storage2/jihoonkim/eDNA/mmseqs/mmseqs_cox1/cox1_refDB  # Reference DB (MMseqs2 형식)
 
 mkdir -p $processed_data_dir $results_dir $tmp_dir
 
