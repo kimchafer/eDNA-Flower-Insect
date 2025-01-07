@@ -17,7 +17,7 @@
 # Description:
 # This script downloads Cox1 gene sequence data from NCBI, converts it into a FASTA file with Taxonomy IDs, and generates an MMseqs2-compatible reference database.
 
-# Key Tasks:
+# Steps:
 # 1. Download Cox1 gene data (in GenBank format) using the NCBI EDirect tool.
 # 2. Use a Python script to generate a FASTA file with Taxonomy IDs and sequence data.
 # 3. Create a Cox1 database using the MMseqs2 `createdb` command.
