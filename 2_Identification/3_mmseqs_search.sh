@@ -9,7 +9,7 @@
 
 # 본 스크립트는 각 샘플마다 개별(병렬)적으로 분석을 수행하기 위해 단일 샘플을 위해 작성되었다.
 # 스크립트 실행 시 아래와 같이 커맨드를 입력한다
-# sbatch mmseqs_search.sh E2 (E2는 raw data의 샘플명에 해당한다. raw data의 full name은 시퀀싱 기관에 따라 상이할 수 있기에 아래 1번 단계의 양식을 유의하라)
+# sbatch 3_mmseqs_search.sh E2 (E2는 raw data의 샘플명에 해당한다. raw data의 full name은 시퀀싱 기관에 따라 상이할 수 있기에 아래 1번 단계의 양식을 유의하라)
 
 # 입력 변수
 sample=$1
