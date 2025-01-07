@@ -29,7 +29,7 @@ BASE_DIR="/storage2/jihoonkim/eDNA"              # 기본 작업 디렉토리
 NCBI_DIR="$BASE_DIR/ncbi"                        # NCBI 관련 데이터 디렉토리
 COX1_DIR="$NCBI_DIR/cox1"                        # Cox1 DB 작업 디렉토리
 MMSEQS_DIR="$BASE_DIR/mmseqsDB"                  # MMseqs2 전용 데이터 디렉토리
-MMSEQS_COX1_DIR="$MMSEQS_DIR/cox1"               # MMseqs2 Cox1 DB 디렉토리
+MMSEQS_COX1_DIR="$MMSEQS_DIR/mmseqs_cox1"        # MMseqs2 Cox1 DB 디렉토리
 
 # ================================
 # 파일 경로 변수 지정
