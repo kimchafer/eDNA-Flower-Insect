@@ -47,7 +47,8 @@ start_time=$(date +%s)
 # GenBank 파일 다운로드
 # ================================
 echo "Starting cox1 gene sequence download in GenBank format..."
-mkdir -p "$COX1_DIR"  # 작업 디렉토리 생성
+mkdir -p "$NCBI_DIR"     # NCBI 관련 데이터 디렉토리 생성
+mkdir -p "$COX1_DIR"     # NCBI Cox1 디렉토리 생성
 esearch -db nucleotide -query "cox1[Gene] NOT mitogenome[Title]" | \
 efetch -format gb > "$GENBANK_FILE"
 
@@ -112,7 +113,8 @@ fi
 # MMseqs2 전용 DB로 변환
 # ================================
 echo "==> Creating MMseqs2 database"
-mkdir -p "$MMSEQS_COX1_DIR"  # MMseqs2 Cox1 디렉토리 생성
+mkdir -p "$MMSEQS_DIR"         # MMseqs2 전용 디렉토리 생성
+mkdir -p "$MMSEQS_COX1_DIR"    # MMseqs2 Cox1 디렉토리 생성
 mmseqs createdb "$FASTA_FILE" "$MMSEQS_DB"
 
 # 변환 성공 여부 확인
