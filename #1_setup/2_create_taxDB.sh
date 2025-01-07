@@ -35,6 +35,12 @@ COX1_DB="$MMSEQS_DIR/cox1/cox1_refDB"            # MMseqs2 Cox1 DB
 TAXONOMY_DB="$MMSEQS_DIR/taxonomy/mmseqs_taxDB"  # MMseqs2 Taxonomy DB
 
 # ================================
+# 작업 시작 시간 기록
+# ================================
+start_time=$(date +%s)
+echo "Taxonomy DB creation started at: $(date)"
+
+# ================================
 # NCBI Taxonomy 데이터 다운로드 및 압축 해제
 # ================================
 mkdir -p "$NCBI_TAX_DUMP"
@@ -53,3 +59,14 @@ mmseqs createtaxdb "$COX1_DB" "$TAXONOMY_DB" --ncbi-tax-dump "$NCBI_TAX_DUMP"
 # ================================
 echo "MMseqs2 Taxonomy database created at $TAXONOMY_DB"
 
+# ================================
+# 작업 종료 시간 기록
+# ================================
+end_time=$(date +%s)
+elapsed_time=$((end_time - start_time))
+
+# ================================
+# 완료 메시지
+# ================================
+echo "MMseqs2 Taxonomy database created at $TAXONOMY_DB"
+echo "Total elapsed time: $((elapsed_time / 60)) minutes and $((elapsed_time % 60)) seconds"
