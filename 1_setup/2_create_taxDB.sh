@@ -4,6 +4,25 @@
 #SBATCH -n 4                          # 사용 CPU 수
 #SBATCH --time=UNLIMITED              # 실행 시간 제한 없음
 
+# 2_create_taxDB.sh
+# 설명:
+# NCBI에서 Taxonomy 데이터를 다운로드한 뒤, MMseqs2에서 사용할 수 있는 Taxonomy DB를 생성하는 스크립트입니다.
+
+# 주요 작업:
+# 1. NCBI Taxonomy 데이터를 다운로드(taxdump.tar.gz) 및 압축 해제.
+# 2. MMseqs2의 createtaxdb 명령어를 이용해 Taxonomy DB 생성.
+# 3. 생성된 Taxonomy DB를 지정된 경로에 저장.
+
+# 2_create_taxDB.sh
+# Description: 
+# This script downloads the NCBI Taxonomy database and creates a taxonomy database for MMseqs2.
+# The output taxonomy database is used for annotating sequences with taxonomic information.
+
+# Steps:
+# 1. Download and extract NCBI Taxonomy data (taxdump.tar.gz).
+# 2. Use the NCBI taxonomy data to create an MMseqs2-compatible taxonomy database.
+# 3. Outputs the taxonomy database at the specified location.
+
 # ================================
 # 경로 설정
 # ================================
