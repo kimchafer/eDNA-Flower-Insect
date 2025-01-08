@@ -2,10 +2,9 @@
 #SBATCH --job-name=mmseqs_search
 #SBATCH --output=mmseqs_search_%j.out
 #SBATCH --error=mmseqs_search_%j.err
-#SBATCH --mem=64G
 #SBATCH --time=UNLIMITED
-#SBATCH --cpus-per-task=8
-#SBATCH --partition=Node3
+#SBATCH -p Node7
+#SBATCH -n 16
 
 # 본 스크립트는 각 샘플마다 개별(병렬)적으로 분석을 수행하기 위해 단일 샘플을 위해 작성되었다.
 # 스크립트 실행 시 아래와 같이 커맨드를 입력한다
