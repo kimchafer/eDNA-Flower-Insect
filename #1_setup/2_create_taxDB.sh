@@ -1,8 +1,7 @@
 #!/bin/bash
 #SBATCH -J tax_db                     # 작업 이름
 #SBATCH -p Node7                      # 실행 노드
-#SBATCH -n 4                          # 사용 CPU 수
-#SBATCH --mem=16G                     # 사용 메모리 수
+#SBATCH -n 8                          # 사용 CPU 수
 #SBATCH --time=UNLIMITED              # 실행 시간 제한 없음
 
 # 2_create_taxDB.sh
