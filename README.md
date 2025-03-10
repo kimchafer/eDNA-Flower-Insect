@@ -1,11 +1,28 @@
 # eDNA
 eDNA analyses for insect pollinators
 
+분석에 앞서 편의를 위해 작업 디렉토리 구조를 설정하자.
+
+DB와 분석용 디렉토리를 우선 별개로 생성한다.
+```
+.
+├── analyses
+└── DB
+```
 esearch 기능의 사용 불가로 인해 gb파일로부터 각 서열에 상응하는 accesstion number와 taxonomy ID를 추출해야만 했다.
+
 fasta파일의 헤더에는 taxonomy ID 정보가 없기 때문에 gb형식을 사용해야 한다.
 
 Cytochrome c oxidase subunit I의 축약 형태가 다양하므로 모든 키워드 검색 결과를 개별 gb파일로 다운로드하자.
-
+```
+.
+├── analysis
+└── DB
+    ├── Co1_Insecta.gb
+    ├── CoI_Insecta.gb
+    ├── Cox1_Insecta.gb
+    └── CoxI_Insecta.gb
+```
 다운로드된 파일들은 다음의 파이썬 코드를 통해 하나의 파일로 합칠 수 있다: `1_combine_gb_files.py`
 ```
 import os
@@ -94,6 +111,14 @@ with open(output_file, 'w') as f:
 
 print(f"VERSION과 Taxon ID가 {output_file}에 저장되었습니다.")
 ```
+작업이 정상적으로 완료되었다면 작업 디렉토리 내 파일 구성은 다음과 같다:
+```
+.
+├── 1_combine_gb_files.py
+├── 2_taxidmap.py
+├── COI_all_Insecta.gb
+└── taxidmap.txt
+```
 
 이제 레퍼런스 DB 제작을 위해 gb 파일을 fasta 형식으로 전환한다: `3_convert_gb_to_fasta.py`
 
@@ -144,11 +169,42 @@ print(f"Skipped records: {skipped_records}")
 print(f"Skipped IDs saved to: {skipped_ids_file}")
 ```
 
+작업이 완료된 작업 디렉토리 구성은 다음과 같다:
+```
+.
+├── 1_combine_gb_files.py
+├── 2_taxidmap.py
+├── 3_convert_gb_to_fasta.py
+├── COI_all_Insecta.fasta
+├── COI_all_Insecta.gb
+├── convert_skipped_ids.txt
+└── taxidmap.txt
+```
+
+
 fasta 파일 전환이 완료되면 해당 파일과 taxonomy ID 정보를 결합한 레퍼런스 DB 제작을 진행한다.
 ```
 mmseqs createdb COI_all_Insecta.fasta cox1.refDB
 
 mmseqs createtaxdb cox1.refDB tmp —ncbi-tax-dump taxonomy/ —tax-mapping-file taxidmap.txt
 ```
-
+작업이 완료된 작업 디렉토리 구성은 다음과 같다:
+```
+.
+├── 1_combine_gb_files.py
+├── 2_taxidmap.py
+├── 3_convert_gb_to_fasta.py
+├── COI_all_Insecta.fasta
+├── COI_all_Insecta.gb
+├── convert_skipped_ids.txt
+├── cox1.refDB
+├── cox1.refDB.dbtype
+├── cox1.refDB_h
+├── cox1.refDB_h.dbtype
+├── cox1.refDB_h.index
+├── cox1.refDB.index
+├── cox1.refDB.lookup
+├── cox1.refDB.source
+└── taxidmap.txt
+```
 
