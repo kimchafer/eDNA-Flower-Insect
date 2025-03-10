@@ -1,6 +1,8 @@
 # eDNA
 eDNA analyses for insect pollinators
 
+## Reference DB setup
+
 분석에 앞서 편의를 위해 작업 디렉토리 구조를 설정하자.
 
 DB와 분석용 디렉토리를 우선 별개로 생성한다. ('.'으로 표현된 베이스 디렉토리 이름은 'eDNA'라고 가정하자)
