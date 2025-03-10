@@ -1,7 +1,7 @@
 # eDNA
 eDNA analyses for insect pollinators
 
-## Reference DB setup
+## Reference DB Setup
 
 분석에 앞서 편의를 위해 작업 디렉토리 구조를 설정하자.
 
@@ -232,3 +232,5 @@ mmseqs createtaxdb cox1.refDB tmp —ncbi-tax-dump taxonomy/ —tax-mapping-file
     ├── cox1.refDB.source
     └── taxidmap.txt
 ```
+
+## Taxonomy Analysis
