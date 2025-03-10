@@ -6,7 +6,7 @@ fasta파일의 헤더에는 taxonomy ID 정보가 없기 때문에 gb형식을 �
 
 Cytochrome c oxidase subunit I의 축약 형태가 다양하므로 모든 키워드 검색 결과를 개별 gb파일로 다운로드하자.
 
-다운로드된 파일들은 다음의 파이썬 코드를 통해 하나의 파일로 합칠 수 있다: 1_combine_gb_files.py
+다운로드된 파일들은 다음의 파이썬 코드를 통해 하나의 파일로 합칠 수 있다: `1_combine_gb_files.py`
 ```
 import os
 
@@ -29,7 +29,9 @@ with open(output_file, 'w') as outfile:
 
 print(f"모든 .gb 파일이 {output_file}로 합쳐졌습니다.")
 ```
+
 'COI_all_Insecta.gb'가 만들어지면 성공이다. 이제 두 가지 정보를 추출해야 한다.
+
 gb파일로부터 추출한 accesstion number와 taxonomy ID는 다음과 같이 정렬되어야 한다:
 ```
 #taxidmap.txt 예시
@@ -45,7 +47,7 @@ LC797977.1	2726158
 LC797976.1	2726158
 ```
 
-이를 위해 '2_taxidmap.py'를 실행시켜보자. output file로 'taxidmap.txt'가 생성되면 추출이 잘 완료된 것이다.
+이를 위해 `2_taxidmap.py`를 실행시켜보자. output file로 'taxidmap.txt'가 생성되면 추출이 잘 완료된 것이다.
 ```
 import re
 
@@ -93,7 +95,9 @@ with open(output_file, 'w') as f:
 print(f"VERSION과 Taxon ID가 {output_file}에 저장되었습니다.")
 ```
 
-이제 레퍼런스 DB 제작을 위해 gb 파일을 fasta 형식으로 전환한다: 3_convert_gb_to_fasta.py
+이제 레퍼런스 DB 제작을 위해 gb 파일을 fasta 형식으로 전환한다: `3_convert_gb_to_fasta.py`
+
+파일 용량에 따라 시간이 꽤 소요될 수 있다.
 ```
 from Bio import SeqIO
 from Bio.Seq import UndefinedSequenceError
