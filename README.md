@@ -152,7 +152,7 @@ from Bio.Seq import UndefinedSequenceError
 # 입력 및 출력 파일 경로 설정
 genbank_file = "/eDNA/DB/COI_all_Insecta.gb"
 output_fasta_file = "/eDNA/DB/COI_all_Insecta.fasta"
-skipped_ids_file = "eDNA/DB/convert_skipped_ids.txt"
+skipped_ids_file = "/eDNA/DB/convert_skipped_ids.txt"
 
 # 통계 변수 초기화
 total_records = 0
