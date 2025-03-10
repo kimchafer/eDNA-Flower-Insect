@@ -1,4 +1,4 @@
-# eDNA
+# eDNA Metabarcoding
 eDNA analyses for insect pollinators
 
 ## Reference DB Setup
