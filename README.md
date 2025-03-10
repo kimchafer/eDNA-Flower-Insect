@@ -3,7 +3,7 @@ eDNA analyses for insect pollinators
 
 분석에 앞서 편의를 위해 작업 디렉토리 구조를 설정하자.
 
-DB와 분석용 디렉토리를 우선 별개로 생성한다.
+DB와 분석용 디렉토리를 우선 별개로 생성한다. ('.'으로 표현된 베이스 디렉토리 이름은 'eDNA'라고 가정하자)
 ```
 .
 ├── analyses
@@ -23,12 +23,12 @@ Cytochrome c oxidase subunit I의 축약 형태가 다양하므로 모든 키워
     ├── Cox1_Insecta.gb
     └── CoxI_Insecta.gb
 ```
-다운로드된 파일들은 다음의 파이썬 코드를 통해 하나의 파일로 합칠 수 있다: `1_combine_gb_files.py`
+DB 디렉토리에 다운로드된 파일들을 모으고, 다음의 파이썬 스크립트를 같은 디렉토리에 저장한 채로 분석을 수행하면 하나의 파일로 합칠 수 있다: `1_combine_gb_files.py`
 ```
 import os
 
 # 입력 폴더와 출력 파일 경로 설정
-input_folder = "/storage2/jihoonkim/eDNA2/DB/gb_files"  # 여러 .gb 파일이 저장된 폴더 경로
+input_folder = "/eDNA/DB/"  # 여러 .gb 파일이 저장된 폴더 경로
 output_file = "COI_all_Insecta.gb"         # 합쳐진 파일의 출력 경로
 
 # 파일 합치기
@@ -46,6 +46,19 @@ with open(output_file, 'w') as outfile:
 
 print(f"모든 .gb 파일이 {output_file}로 합쳐졌습니다.")
 ```
+작업이 완료된 작업 디렉토리 구성은 다음과 같다:
+```
+.
+├── analysis
+└── DB
+    ├── 1_combine_gb_files.py
+    ├── Co1_Insecta.gb
+    ├── CoI_Insecta.gb
+    ├── Cox1_Insecta.gb
+    ├── CoxI_Insecta.gb
+    └── COI_all_Insecta.gb
+```
+
 
 'COI_all_Insecta.gb'가 만들어지면 성공이다. 이제 두 가지 정보를 추출해야 한다.
 
@@ -64,7 +77,9 @@ LC797977.1	2726158
 LC797976.1	2726158
 ```
 
-이를 위해 `2_taxidmap.py`를 실행시켜보자. output file로 'taxidmap.txt'가 생성되면 추출이 잘 완료된 것이다.
+이를 위해 `2_taxidmap.py` 파이썬 스크립트를 작업하고자 하는 디렉토리에 두고 실행시켜보자.
+
+Output file로 'taxidmap.txt'가 생성되면 추출이 잘 완료된 것이다.
 ```
 import re
 
@@ -114,10 +129,16 @@ print(f"VERSION과 Taxon ID가 {output_file}에 저장되었습니다.")
 작업이 정상적으로 완료되었다면 작업 디렉토리 내 파일 구성은 다음과 같다:
 ```
 .
-├── 1_combine_gb_files.py
-├── 2_taxidmap.py
-├── COI_all_Insecta.gb
-└── taxidmap.txt
+├── analysis
+└── DB
+    ├── 1_combine_gb_files.py
+    ├── 2_taxidmap.py
+    ├── Co1_Insecta.gb
+    ├── CoI_Insecta.gb
+    ├── Cox1_Insecta.gb
+    ├── CoxI_Insecta.gb
+    ├── COI_all_Insecta.gb
+    └── taxidmap.txt
 ```
 
 이제 레퍼런스 DB 제작을 위해 gb 파일을 fasta 형식으로 전환한다: `3_convert_gb_to_fasta.py`
