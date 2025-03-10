@@ -23,7 +23,9 @@ Cytochrome c oxidase subunit I의 축약 형태가 다양하므로 모든 키워
     ├── Cox1_Insecta.gb
     └── CoxI_Insecta.gb
 ```
-DB 디렉토리에 다운로드된 파일들을 모으고, 다음의 파이썬 스크립트를 같은 디렉토리에 저장한 채로 분석을 수행하면 하나의 파일로 합칠 수 있다: `1_combine_gb_files.py`
+DB 디렉토리에 다운로드된 파일들을 모으고, 다음의 파이썬 스크립트로 분석을 수행하면 하나의 파일로 합칠 수 있다: `1_combine_gb_files.py`
+
+모든 작업 스크립트는 작업 디렉토리에 저장된 상태임을 전제로 한다.
 ```
 import os
 
@@ -59,8 +61,9 @@ print(f"모든 .gb 파일이 {output_file}로 합쳐졌습니다.")
     └── COI_all_Insecta.gb
 ```
 
+'COI_all_Insecta.gb'가 만들어지면 성공이다. 하나로 합친 파일 외에 나머지 개별 파일들은 삭제하여도 좋다.
 
-'COI_all_Insecta.gb'가 만들어지면 성공이다. 이제 두 가지 정보를 추출해야 한다.
+이제 두 가지 정보를 추출해야 한다.
 
 gb파일로부터 추출한 accesstion number와 taxonomy ID는 다음과 같이 정렬되어야 한다:
 ```
@@ -77,7 +80,7 @@ LC797977.1	2726158
 LC797976.1	2726158
 ```
 
-이를 위해 `2_taxidmap.py` 파이썬 스크립트를 작업하고자 하는 디렉토리에 두고 실행시켜보자.
+이를 위해 `2_taxidmap.py` 파이썬 스크립트를 실행시켜보자.
 
 Output file로 'taxidmap.txt'가 생성되면 추출이 잘 완료된 것이다.
 ```
@@ -133,10 +136,6 @@ print(f"VERSION과 Taxon ID가 {output_file}에 저장되었습니다.")
 └── DB
     ├── 1_combine_gb_files.py
     ├── 2_taxidmap.py
-    ├── Co1_Insecta.gb
-    ├── CoI_Insecta.gb
-    ├── Cox1_Insecta.gb
-    ├── CoxI_Insecta.gb
     ├── COI_all_Insecta.gb
     └── taxidmap.txt
 ```
@@ -149,9 +148,9 @@ from Bio import SeqIO
 from Bio.Seq import UndefinedSequenceError
 
 # 입력 및 출력 파일 경로 설정
-genbank_file = "/storage2/jihoonkim/eDNA2/DB/COI_all_Insecta.gb"
-output_fasta_file = "/storage2/jihoonkim/eDNA2/DB/COI_all_Insecta.fasta"
-skipped_ids_file = "/storage2/jihoonkim/eDNA2/DB/convert_skipped_ids.txt"
+genbank_file = "/eDNA/DB/COI_all_Insecta.gb"
+output_fasta_file = "/eDNA/DB/COI_all_Insecta.fasta"
+skipped_ids_file = "eDNA/DB/convert_skipped_ids.txt"
 
 # 통계 변수 초기화
 total_records = 0
@@ -190,18 +189,19 @@ print(f"Skipped records: {skipped_records}")
 print(f"Skipped IDs saved to: {skipped_ids_file}")
 ```
 
-작업이 완료된 작업 디렉토리 구성은 다음과 같다:
+작업이 정상적으로 완료되었다면 작업 디렉토리 내 파일 구성은 다음과 같다:
 ```
 .
-├── 1_combine_gb_files.py
-├── 2_taxidmap.py
-├── 3_convert_gb_to_fasta.py
-├── COI_all_Insecta.fasta
-├── COI_all_Insecta.gb
-├── convert_skipped_ids.txt
-└── taxidmap.txt
+├── analysis
+└── DB
+    ├── 1_combine_gb_files.py
+    ├── 2_taxidmap.py
+    ├── 3_convert_gb_to_fasta.py
+    ├── COI_all_Insecta.gb
+    ├── COI_all_Insecta.fasta
+    ├── convert_skipped_ids.txt
+    └── taxidmap.txt
 ```
-
 
 fasta 파일 전환이 완료되면 해당 파일과 taxonomy ID 정보를 결합한 레퍼런스 DB 제작을 진행한다.
 ```
@@ -212,20 +212,21 @@ mmseqs createtaxdb cox1.refDB tmp —ncbi-tax-dump taxonomy/ —tax-mapping-file
 작업이 완료된 작업 디렉토리 구성은 다음과 같다:
 ```
 .
-├── 1_combine_gb_files.py
-├── 2_taxidmap.py
-├── 3_convert_gb_to_fasta.py
-├── COI_all_Insecta.fasta
-├── COI_all_Insecta.gb
-├── convert_skipped_ids.txt
-├── cox1.refDB
-├── cox1.refDB.dbtype
-├── cox1.refDB_h
-├── cox1.refDB_h.dbtype
-├── cox1.refDB_h.index
-├── cox1.refDB.index
-├── cox1.refDB.lookup
-├── cox1.refDB.source
-└── taxidmap.txt
+├── analysis
+└── DB
+    ├── 1_combine_gb_files.py
+    ├── 2_taxidmap.py
+    ├── 3_convert_gb_to_fasta.py
+    ├── COI_all_Insecta.gb
+    ├── COI_all_Insecta.fasta
+    ├── convert_skipped_ids.txt
+    ├── cox1.refDB
+    ├── cox1.refDB.dbtype
+    ├── cox1.refDB_h
+    ├── cox1.refDB_h.dbtype
+    ├── cox1.refDB_h.index
+    ├── cox1.refDB.index
+    ├── cox1.refDB.lookup
+    ├── cox1.refDB.source
+    └── taxidmap.txt
 ```
-
