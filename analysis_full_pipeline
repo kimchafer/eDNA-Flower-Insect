@@ -1,0 +1,62 @@
+#!/bin/bash
+#SBATCH --job-name=full_analysis_pipeline    # Job name
+#SBATCH --output=full_analysis_%j.out       # Standard output
+#SBATCH --error=full_analysis_%j.err        # Error output
+#SBATCH --time=UNLIMITED                    # No time limit
+#SBATCH -p Node7                            # Partition
+#SBATCH -n 32                               # Number of CPUs
+
+# 샘플 이름 설정
+# 같은 분석 스크립트에 대해서 매번 대상파일의 이름을 수정하고 돌리는게 귀찮아서 아래와 같은 설정을 하게 되었다.
+# 일반적으로는 "sbatch script_name.sh"으로 슬럼에 작업을 올리게 되며, 이때에는 sh파일 스크립트 내에 대상파일의 이름이 반드시 언급되어 있을 것이다.
+# 그러나 스크립트 상에 파일명을 두지 않고 "sbatch script_name.sh file_name"와 같이 커맨드에 그때그때 분석하고자 하는 파일명을 함께 입력하도록 하였으니 위와 같이 커맨드를 입력하기 바란다.
+# 아래는 위 설정을 위한 코드이니 그냥 넘어가면 된다.
+sample=$1
+if [ -z "$sample" ]; then
+  echo "Error: No sample name provided. Run as: sbatch script_name.sh <sample>"
+  exit 1
+fi
+
+# 작업 시작 시간 기록
+start_time=$(date +%s)
+
+# 디렉토리 설정
+work_dir=/storage2/jihoonkim/eDNA/analysis/flower
+raw_data_dir=${work_dir}/raw_data
+processed_data_dir=${work_dir}/processed_data
+results_dir=${work_dir}/results
+tmp_dir=${work_dir}/tmp
+ref_db=/storage2/jihoonkim/eDNA2/DB/cox1.refDB  # Reference DB
+
+mkdir -p $processed_data_dir $results_dir $tmp_dir
+
+# 1. Paired-End 데이터 병합
+echo "==> Merging paired-end reads for sample: $sample"
+R1=$(find $raw_data_dir -name "${sample}_S*_R1_001.fastq.gz")
+R2=$(find $raw_data_dir -name "${sample}_S*_R2_001.fastq.gz")
+merged_prefix=${processed_data_dir}/${sample}_merged
+
+pear -f $R1 -r $R2 -o $merged_prefix -j 8
+
+merged_file=${merged_prefix}.assembled.fastq
+if [ ! -f "$merged_file" ]; then
+  echo "Error: Merged file not found for sample $sample."
+  exit 1
+fi
+
+# 2. FASTQ -> FASTA 변환
+echo "==> Converting FASTQ to FASTA for sample: $sample"
+fasta_file=${processed_data_dir}/${sample}_merged.fasta
+seqtk seq -A $merged_file > $fasta_file
+
+# 3. MMseqs2 데이터베이스 생성
+echo "==> Creating MMseqs2 database for sample: $sample"
+query_db=${processed_data_dir}/${sample}_queryDB
+mmseqs createdb $fasta_file $query_db
+
+# 4. Taxonomy 결과 경로 설정
+taxonomy_result=${results_dir}/${sample}_taxonomy_result
+tsv_result=${results_dir}/${sample}_taxonomy_result.tsv
+krona_report=${results_dir}/${sample}_krona_report.html
+taxonomy_tmp_dir=${tmp_dir}/${sample}_taxonomy_tmp
+mkdir -p $taxonomy_tmp_dir
