@@ -528,6 +528,7 @@ mmseqs createtaxdb cox1.refDB tmp --ncbi-tax-dump taxdump/ --tax-mapping-file go
     ├── 1_combine_gb_files.py
     ├── 2_taxidmap.py
     ├── 3_convert_gb_to_fasta.py
+    ├── 4_DB_tax_filtering.sh
     ├── COI_all_Insecta.gb
     ├── COI_all_Insecta.fasta
     ├── convert_skipped_ids.txt
