@@ -204,10 +204,31 @@ print(f"Skipped IDs saved to: {skipped_ids_file}")
     └── taxidmap.txt
 ```
 Taxonomy 계층 정보를 통해 불필요한 데이터를 필터링하고, 해당 정보를 실제 mmseqs2 전용 DB에 입히기 위해서, taxdump = NCBI Taxonomy 원천 데이터 묶음이 필요하다.
-
+```
+mkdir taxdump
+cd taxdump
 wget -N https://ftp.ncbi.nlm.nih.gov/pub/taxonomy/taxdump.tar.gz
 tar -xzf taxdump.tar.gz names.dmp nodes.dmp merged.dmp delnodes.dmp
-
+```
+작업이 정상적으로 완료되었다면 작업 디렉토리 내 파일 구성은 다음과 같다:
+```
+.
+├── analysis
+└── DB
+    ├── 1_combine_gb_files.py
+    ├── 2_taxidmap.py
+    ├── 3_convert_gb_to_fasta.py
+    ├── COI_all_Insecta.gb
+    ├── COI_all_Insecta.fasta
+    ├── convert_skipped_ids.txt
+    ├── taxidmap.txt
+    └── taxdump
+        ├── delnodes.dmp
+        ├── merged.dmp
+        ├── names.dmp
+        ├── nodes.dmp
+        └── taxdump.tar.gz
+```
 NCBI와 같은 공공데이터베이스에는 taxonomy info가 불완전한 데이터도 많이 존재한다.
 
 이번 연구에선 비교적 구체적인 수준의 동정이 요구되므로, genus 수준까지의 데이터들만 레퍼런스로 인정하고, 그보다 정보력이 떨어지는, 즉 family 수준 이상의 정보 밖에 없는 서열들은 DB에서 제거하고자 한다.
@@ -242,7 +263,7 @@ trap 'echo "[ERROR] at line $LINENO"; exit 1' ERR
 DB_DIR="/storage2/flower_eDNA/DB"
 FASTA="${DB_DIR}/COI_all_Insecta.fasta"
 MAP="${DB_DIR}/taxidmap.txt"
-TAXDUMP="/storage2/flower_eDNA/taxdump"
+TAXDUMP="/storage2/flower_eDNA/DB/taxdump"
 OUT_BASENAME="COI_good_tax"   # 결과: ${DB_DIR}/${OUT_BASENAME}.fasta
 
 ###############################################################################
@@ -488,9 +509,9 @@ echo " - 최종 FASTA (KEEP) : $OUT_FASTA"
     ├── COI_all_Insecta.gb
     ├── COI_all_Insecta.fasta
     ├── convert_skipped_ids.txt
-    └── taxidmap.txt
+    ├── taxidmap.txt
+    └── taxdump
 ```
-
 fasta 파일 전환이 완료되면 해당 파일과 taxonomy ID 정보를 결합한 레퍼런스 DB 제작을 진행한다.
 ```
 mmseqs createdb COI_all_Insecta.fasta cox1.refDB
