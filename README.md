@@ -190,25 +190,20 @@ print(f"Successfully converted records: {converted_records}")
 print(f"Skipped records: {skipped_records}")
 print(f"Skipped IDs saved to: {skipped_ids_file}")
 ```
-
-
 NCBI와 같은 공공데이터베이스에는 taxonomy info가 불완전한 데이터도 많이 존재한다.
+
 이번 연구에선 비교적 구체적인 수준의 동정이 요구되므로, genus 수준까지의 데이터들만 레퍼런스로 인정하고, 그보다 정보력이 떨어지는, 즉 family 수준 이상의 정보 밖에 없는 서열들은 DB에서 제거하고자 한다.
-위에서 만들어진 fasta을 베이스로 필터링을 수행한다:
+
+위에서 만들어진 fasta을 베이스로 필터링을 수행한다: `4_DB_tax_filtering.sh`
 ```
 #!/bin/bash
-###############################################################################
-# SLURM 배치 설정
-# - 작업명, 시간 제한, 메모리, 파티션, CPU 수(스레드), 로그 파일 위치
-# - 메모리 16G 권장: 2.1GB FASTA + taxdump(nodes/names) 파싱 + 대규모 정규식 grep까지 고려
-###############################################################################
-#SBATCH --job-name=DB_tax_filtering          # (필수) Job name
-#SBATCH --time=24:00:00                      # (권장) 충분한 시간 확보
-#SBATCH --mem=16G                            # (권장) 메모리. 상황 따라 8G도 가능하나 16G 안전
-#SBATCH -p Node7                             # (환경) 사용할 파티션
-#SBATCH -n 12                                # (권장) CPU 스레드 수
-#SBATCH --output=DB_tax_filtering_%j.out     # 표준 출력 로그
-#SBATCH --error=DB_tax_filtering_%j.err      # 표준 에러 로그
+#SBATCH --job-name=DB_tax_filtering          # Job name
+#SBATCH --time=24:00:00                      # Time limit
+#SBATCH --mem=16G                            # Memory limit
+#SBATCH -p Node7                             # Partition
+#SBATCH -n 12                                # Number of CPUs
+#SBATCH --output=DB_tax_filtering_%j.out     # Standard log
+#SBATCH --error=DB_tax_filtering_%j.err      # Error log
 
 ###############################################################################
 # 안전 설정
