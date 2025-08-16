@@ -1,14 +1,6 @@
 # Flower-Visiting Insect Diversity in Korea Using eDNA Metabarcoding
 eDNA analyses for insect pollinators
 
-<details>
-  <summary><h3>MMseqs2</h3></summary>
-  <div>
-    <ul>
-  <details>
-    <summary><h3>Reference DB Setup<h3></summary>
-    <div>
-      <ul>
 분석에 앞서 편의를 위해 작업 디렉토리 구조를 설정하자.
 
 DB와 분석용 디렉토리를 우선 별개로 생성한다. ('.'으로 표현된 베이스 디렉토리 이름은 'eDNA'라고 가정하자)
@@ -17,10 +9,23 @@ DB와 분석용 디렉토리를 우선 별개로 생성한다. ('.'으로 표현
 ├── analysis
 └── DB
 ```
-esearch 기능의 사용 불가로 인해 gb파일로부터 각 서열에 상응하는 accesstion number와 taxonomy ID를 추출해야만 했다.
+위 구조를 기본으로하여 아래의 분석 튜토리얼들이 진행된다.
 
-fasta파일의 헤더에는 taxonomy ID 정보가 없기 때문에 gb형식을 사용해야 한다.
+<details>
+  <summary><h3>MMseqs2</h3></summary>
+  <div>
+    <ul>
+  <details>
+    <summary><h3>Reference DB Setup<h3></summary>
+    <div>
+      <ul>
 
+본 연구에 사용된 MMseqs2 전용 DB는 NCBI 기반의 곤충 COI 서열 모음이다.  
+해당 데이터는 2025년 1월 16일 다운로드받아졌다.  
+아래는 NCBI gb파일로부터 MMseqs2 전용 DB까지의 제작 과정 튜토리얼이며, 이미 만들어진 전용 DB는 리포지토리에 파일이 업로드되어 있으니 바로 사용하면 된다.  
+
+셋업 당시 esearch 기능의 사용 불가로 인해 gb파일로부터 각 서열에 상응하는 accesstion number와 taxonomy ID를 추출해야만 했다.  
+fasta파일의 헤더에는 taxonomy ID 정보가 없기 때문에 gb형식을 사용해야 한다.  
 Cytochrome c oxidase subunit I의 축약 형태가 다양하므로 모든 키워드 검색 결과를 개별 gb파일로 다운로드하자.
 ```
 .
