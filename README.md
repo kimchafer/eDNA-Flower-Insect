@@ -562,6 +562,6 @@ mmseqs createtaxdb cox1.refDB tmp --ncbi-tax-dump taxdump/ --tax-mapping-file go
 
 
 <details>
-  <summary><h2>QIMME 2</h2>h2></summary>
+  <summary><h2>QIMME 2</h2></summary>
   <!-- 내용 -->
 </details>
