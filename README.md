@@ -203,6 +203,11 @@ print(f"Skipped IDs saved to: {skipped_ids_file}")
     ├── convert_skipped_ids.txt
     └── taxidmap.txt
 ```
+Taxonomy 계층 정보를 통해 불필요한 데이터를 필터링하고, 해당 정보를 실제 mmseqs2 전용 DB에 입히기 위해서, taxdump = NCBI Taxonomy 원천 데이터 묶음이 필요하다.
+
+wget -N https://ftp.ncbi.nlm.nih.gov/pub/taxonomy/taxdump.tar.gz
+tar -xzf taxdump.tar.gz names.dmp nodes.dmp merged.dmp delnodes.dmp
+
 NCBI와 같은 공공데이터베이스에는 taxonomy info가 불완전한 데이터도 많이 존재한다.
 
 이번 연구에선 비교적 구체적인 수준의 동정이 요구되므로, genus 수준까지의 데이터들만 레퍼런스로 인정하고, 그보다 정보력이 떨어지는, 즉 family 수준 이상의 정보 밖에 없는 서열들은 DB에서 제거하고자 한다.
