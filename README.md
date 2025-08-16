@@ -2,11 +2,11 @@
 eDNA analyses for insect pollinators
 
 <details>
-  <summary>MMseqs2</summary>
+  <summary><h2>MMseqs2</h2></summary>
   <div>
     <ul>
   <details>
-    <summary>Reference DB Setup</summary>
+    <summary><h3>Reference DB Setup<h3></summary>
     <div>
       <ul>
 분석에 앞서 편의를 위해 작업 디렉토리 구조를 설정하자.
@@ -553,7 +553,7 @@ mmseqs createtaxdb cox1.refDB tmp --ncbi-tax-dump taxdump/ --tax-mapping-file go
   </details>
 
   <details>
-    <summary>Taxonomy Analysis</summary>
+    <summary><h2>Taxonomy Analysis</h2>h2></summary>
 
   </details>
 
