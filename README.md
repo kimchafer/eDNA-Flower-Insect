@@ -516,9 +516,9 @@ echo " - 최종 FASTA (KEEP) : $OUT_FASTA"
 ```
 fasta 파일 전환이 완료되면 해당 파일과 taxonomy ID 정보를 결합한 레퍼런스 DB 제작을 진행한다.
 ```
-mmseqs createdb COI_all_Insecta.fasta cox1.refDB
+mmseqs createdb COI_good_tax.fasta cox1.refDB
 
-mmseqs createtaxdb cox1.refDB tmp —ncbi-tax-dump taxonomy/ —tax-mapping-file taxidmap.txt
+mmseqs createtaxdb cox1.refDB tmp --ncbi-tax-dump taxdump/ --tax-mapping-file good_tax.ids.txt
 ```
 작업이 완료된 작업 디렉토리 구성은 다음과 같다:
 ```
@@ -539,7 +539,9 @@ mmseqs createtaxdb cox1.refDB tmp —ncbi-tax-dump taxonomy/ —tax-mapping-file
     ├── cox1.refDB.index
     ├── cox1.refDB.lookup
     ├── cox1.refDB.source
-    └── taxidmap.txt
+    ├── taxidmap.txt
+    ├── taxdump
+    └── tmp
 ```
 
 ## Taxonomy Analysis
