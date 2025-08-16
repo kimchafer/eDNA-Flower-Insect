@@ -2,7 +2,7 @@
 eDNA analyses for insect pollinators
 
 <details>
-  <summary><h2>MMseqs2</h2></summary>
+  <summary><h3>MMseqs2</h3></summary>
   <div>
     <ul>
   <details>
@@ -562,6 +562,6 @@ mmseqs createtaxdb cox1.refDB tmp --ncbi-tax-dump taxdump/ --tax-mapping-file go
 
 
 <details>
-  <summary><h2>QIMME 2</h2></summary>
+  <summary><h3>QIMME 2</h3></summary>
   <!-- 내용 -->
 </details>
