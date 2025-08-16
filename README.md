@@ -1,4 +1,4 @@
-# eDNA Metabarcoding
+# Flower-Visiting Insect Diversity in Korea Using eDNA Metabarcoding
 eDNA analyses for insect pollinators
 
 ## Reference DB Setup
