@@ -233,7 +233,9 @@ NCBI와 같은 공공데이터베이스에는 taxonomy info가 불완전한 데�
 
 이번 연구에선 비교적 구체적인 수준의 동정이 요구되므로, genus 수준까지의 데이터들만 레퍼런스로 인정하고, 그보다 정보력이 떨어지는, 즉 family 수준 이상의 정보 밖에 없는 서열들은 DB에서 제거하고자 한다.
 
-위에서 만들어진 fasta을 베이스로 필터링을 수행한다: `4_DB_tax_filtering.sh`
+위에서 만들어진 COI_all_Insecta.fasta, taxidmap.txt, taxdump를 베이스로 필터링을 수행한다: `4_DB_tax_filtering.sh`
+
+이는 taxidmap.txt의 taxid를 taxdump의 계층 정보에 검색하여, 속 수준 이하의 taxonomy info를 가진 accession만 필터링하고, 해당 accession만으로 이뤄진 새로운 fasta 파일을 생성하는 과정이다.
 ```
 #!/bin/bash
 #SBATCH --job-name=DB_tax_filtering          # Job name
