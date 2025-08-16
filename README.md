@@ -190,6 +190,19 @@ print(f"Successfully converted records: {converted_records}")
 print(f"Skipped records: {skipped_records}")
 print(f"Skipped IDs saved to: {skipped_ids_file}")
 ```
+작업이 정상적으로 완료되었다면 작업 디렉토리 내 파일 구성은 다음과 같다:
+```
+.
+├── analysis
+└── DB
+    ├── 1_combine_gb_files.py
+    ├── 2_taxidmap.py
+    ├── 3_convert_gb_to_fasta.py
+    ├── COI_all_Insecta.gb
+    ├── COI_all_Insecta.fasta
+    ├── convert_skipped_ids.txt
+    └── taxidmap.txt
+```
 NCBI와 같은 공공데이터베이스에는 taxonomy info가 불완전한 데이터도 많이 존재한다.
 
 이번 연구에선 비교적 구체적인 수준의 동정이 요구되므로, genus 수준까지의 데이터들만 레퍼런스로 인정하고, 그보다 정보력이 떨어지는, 즉 family 수준 이상의 정보 밖에 없는 서열들은 DB에서 제거하고자 한다.
@@ -458,7 +471,6 @@ echo " - 최종 FASTA (KEEP) : $OUT_FASTA"
 
 
 ```
-
 작업이 정상적으로 완료되었다면 작업 디렉토리 내 파일 구성은 다음과 같다:
 ```
 .
@@ -467,6 +479,7 @@ echo " - 최종 FASTA (KEEP) : $OUT_FASTA"
     ├── 1_combine_gb_files.py
     ├── 2_taxidmap.py
     ├── 3_convert_gb_to_fasta.py
+    ├── 4_DB_tax_filtering.sh
     ├── COI_all_Insecta.gb
     ├── COI_all_Insecta.fasta
     ├── convert_skipped_ids.txt
