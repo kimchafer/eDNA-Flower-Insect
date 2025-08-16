@@ -14,7 +14,7 @@ eDNA analyses for insect pollinators
 DB와 분석용 디렉토리를 우선 별개로 생성한다. ('.'으로 표현된 베이스 디렉토리 이름은 'eDNA'라고 가정하자)
 ```
 .
-├── analyses
+├── analysis
 └── DB
 ```
 esearch 기능의 사용 불가로 인해 gb파일로부터 각 서열에 상응하는 accesstion number와 taxonomy ID를 추출해야만 했다.
