@@ -1,6 +1,9 @@
 # Flower-Visiting Insect Diversity in Korea Using eDNA Metabarcoding
 eDNA analyses for insect pollinators
 
+<details>
+  <summary>MMseqs2</summary>
+
 ## Reference DB Setup
 
 분석에 앞서 편의를 위해 작업 디렉토리 구조를 설정하자.
@@ -546,3 +549,14 @@ mmseqs createtaxdb cox1.refDB tmp --ncbi-tax-dump taxdump/ --tax-mapping-file go
 ```
 
 ## Taxonomy Analysis
+
+
+
+
+</details>
+
+
+<details>
+  <summary>QIMME 2</summary>
+  <!-- 내용 -->
+</details>
