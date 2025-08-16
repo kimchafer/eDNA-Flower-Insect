@@ -3,9 +3,12 @@ eDNA analyses for insect pollinators
 
 <details>
   <summary>MMseqs2</summary>
-
-## Reference DB Setup
-
+  <div>
+    <ul>
+  <details>
+    <summary>Reference DB Setup</summary>
+    <div>
+      <ul>
 분석에 앞서 편의를 위해 작업 디렉토리 구조를 설정하자.
 
 DB와 분석용 디렉토리를 우선 별개로 생성한다. ('.'으로 표현된 베이스 디렉토리 이름은 'eDNA'라고 가정하자)
@@ -547,12 +550,14 @@ mmseqs createtaxdb cox1.refDB tmp --ncbi-tax-dump taxdump/ --tax-mapping-file go
     ├── taxdump
     └── tmp
 ```
+  </details>
 
-## Taxonomy Analysis
+  <details>
+    <summary>Taxonomy Analysis</summary>
 
+  </details>
 
-
-
+  </div>
 </details>
 
 
