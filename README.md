@@ -663,6 +663,7 @@ seqtk seq -A $merged_file > $fasta_file
 ```
 .
 ├── analysis
+│   ├── A1_filtering.sh
 │   ├── processed_data
 │   │   ├── PS32_fastp.json
 │   │   ├── PS36_fastp.json
@@ -696,6 +697,7 @@ cat /eDNA/analysis/processed_data/PS32.fasta \
 ```
 .
 ├── analysis
+│   ├── A1_filtering.sh
 │   ├── processed_data
 │   │   ├── PS32_fastp.json
 │   │   ...
@@ -715,6 +717,8 @@ Assembly없이 raw read를 그대로 동정에 사용하는 메타바코딩 특�
 ```
 .
 ├── analysis
+│   ├── A1_filtering.sh
+│   ├── A2_dereplication.sh
 │   ├── processed_data
 │   │   ├── PS32_fastp.json
 │   │   ...
@@ -733,13 +737,12 @@ Assembly없이 raw read를 그대로 동정에 사용하는 메타바코딩 특�
 
 ```
 #!/bin/bash
-#SBATCH --job-name=full_analysis_pipeline    # Job name
-#SBATCH --output=full_analysis_%j.out       # Standard output
-#SBATCH --error=full_analysis_%j.err        # Error output
-#SBATCH --time=24:00:00                  # Time limit
-#SBATCH --mem=4G                         # Memory
-#SBATCH -p Node7                            # Partition
-#SBATCH -n 32                               # Number of CPUs
+#SBATCH --job-name=tax_analysis          # Job name
+#SBATCH --output=full_analysis_%j.out    # Standard output
+#SBATCH --error=full_analysis_%j.err     # Error output
+#SBATCH --time=48:00:00                  # Time limit
+#SBATCH -p Node7                         # Partition
+#SBATCH -n 32                            # Number of CPUs
 
 # 샘플 이름 설정
 sample=$1
@@ -752,24 +755,83 @@ fi
 start_time=$(date +%s)
 
 # 디렉토리 설정
-work_dir=/storage2/jihoonkim/eDNA/analysis/flower
-raw_data_dir=${work_dir}/raw_data
+work_dir=/eDNA/analysis
 processed_data_dir=${work_dir}/processed_data
 results_dir=${work_dir}/results
 tmp_dir=${work_dir}/tmp
-ref_db=/storage2/jihoonkim/eDNA2/DB/cox1.refDB  # Reference DB
+ref_db=/eDNA/DB/cox1.refDB  # Reference DB
 
-# 3. MMseqs2 쿼리 데이터베이스 생성
+# 1. MMseqs2 쿼리 데이터베이스 생성
 echo "==> Creating MMseqs2 database for sample: $sample"
 query_db=${processed_data_dir}/${sample}_queryDB
 mmseqs createdb ${sample}_derep.fasta $query_db
 
-# 4. Taxonomy 결과 경로 설정
+# 2. Taxonomy 결과 경로 설정
 taxonomy_result=${results_dir}/${sample}_taxonomy_result
 tsv_result=${results_dir}/${sample}_taxonomy_result.tsv
 krona_report=${results_dir}/${sample}_krona_report.html
 taxonomy_tmp_dir=${tmp_dir}/${sample}_taxonomy_tmp
 mkdir -p $taxonomy_tmp_dir
+
+# 기존 Taxonomy 결과 파일 삭제
+if [ -f "${taxonomy_result}.dbtype" ]; then
+  echo "==> Previous taxonomy result exists. Deleting..."
+  rm -rf "${taxonomy_result}"*
+fi
+
+# 3. MMseqs2 Taxonomy 분석 수행
+echo "==> Running taxonomy analysis for sample: $sample"
+mmseqs taxonomy $query_db $ref_db $taxonomy_result $taxonomy_tmp_dir \
+  --tax-lineage 1 --threads 32 --search-type 3 --orf-filter 0 --min-seq-id 0.98 \
+  --alignment-mode 4 --min-aln-len 300
+if [ $? -ne 0 ]; then
+  echo "Error: Taxonomy analysis failed for sample $sample."
+  exit 1
+fi
+
+# 4. Taxonomy 결과를 TSV로 변환
+echo "==> Converting taxonomy results to TSV for sample: $sample"
+mmseqs createtsv $query_db $taxonomy_result $tsv_result --threads 16
+if [ $? -ne 0 ]; then
+  echo "Error: Failed to convert taxonomy results to TSV for sample $sample."
+  exit 1
+fi
+
+# 5. Krona HTML 보고서 생성
+echo "==> Generating Krona HTML report for sample: $sample"
+mmseqs taxonomyreport $ref_db $taxonomy_result $krona_report --threads 16 --report-mode 1
+if [ $? -ne 0 ]; then
+  echo "Error: Failed to generate Krona report for sample $sample."
+  exit 1
+fi
+
+# 작업 종료 시간 기록 및 소요 시간 계산
+end_time=$(date +%s)
+elapsed_time=$((end_time - start_time))
+
+echo "==> Taxonomy analysis completed for sample: $sample"
+echo "Results summary:"
+echo "  - Taxonomy DB: $taxonomy_result"
+echo "  - TSV Result: $tsv_result"
+echo "  - Krona HTML Report: $krona_report"
+echo "Total elapsed time: $((elapsed_time / 60)) minutes and $((elapsed_time % 60)) seconds"
+```
+
+
+
+
+
+```
+.
+├── analysis
+│   ├── A1_filtering.sh
+│   ├── A2_dereplication.sh
+│   ├── A3_dereplication.sh
+│   ├── processed_data
+│   ├── raw_data
+│   ├── results
+│   └── tmp
+└── DB
 ```
 
 
