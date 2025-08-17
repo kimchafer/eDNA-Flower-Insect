@@ -11,8 +11,8 @@ DB와 분석용 디렉토리를 우선 별개로 생성한다. ('.'으로 표현
 ```
 위 구조를 기본으로하여 아래의 분석 튜토리얼들이 진행된다.
 
-MMseqs2 작성자: Jihoon KIM
-Qimme 2 작성자: 
+__MMseqs2 작성자: Jihoon KIM__   
+__Qimme 2 작성자:__ 
 
 <details>
   <summary><h3>MMseqs2</h3></summary>
@@ -20,8 +20,7 @@ Qimme 2 작성자:
     <ul>
   <details>
     <summary><h3>Reference DB Setup<h3></summary>
-    <div>
-      <ul>
+
 
 본 연구에 사용된 MMseqs2 전용 DB는 NCBI 기반의 곤충 COI 서열 모음이다.  
 해당 데이터는 2025년 1월 16일 다운로드받아졌다.  
