@@ -711,7 +711,66 @@ Assembly없이 raw read를 그대로 동정에 사용하는 메타바코딩 특�
 
 
 
+위 과정을 통해 PS_JJ_derep.fasta가 생성된 것을 확인할 수 있다:
+```
+.
+├── analysis
+│   ├── processed_data
+│   │   ├── PS32_fastp.json
+│   │   ...
+│   │   ├── PS_JJ_derep.fasta
+│   │   └── PS_JJ.fasta
+│   ├── raw_data
+│   ├── results
+│   └── tmp
+└── DB
+```
+실제 PS_JJ.fasta에서 PS_JJ_derep.fasta으로 용량 변화가 108.9 MB -> 73.0 MB로 이뤄진 것을 확인할 수 있다.
+  
+마지막 생성 파일을 인풋으로 하여 서열 동정 및 분류 분석을 수행해보자.
 
+
+
+```
+#!/bin/bash
+#SBATCH --job-name=full_analysis_pipeline    # Job name
+#SBATCH --output=full_analysis_%j.out       # Standard output
+#SBATCH --error=full_analysis_%j.err        # Error output
+#SBATCH --time=24:00:00                  # Time limit
+#SBATCH --mem=4G                         # Memory
+#SBATCH -p Node7                            # Partition
+#SBATCH -n 32                               # Number of CPUs
+
+# 샘플 이름 설정
+sample=$1
+if [ -z "$sample" ]; then
+  echo "Error: No sample name provided. Run as: sbatch script_name.sh <sample>"
+  exit 1
+fi
+
+# 작업 시작 시간 기록
+start_time=$(date +%s)
+
+# 디렉토리 설정
+work_dir=/storage2/jihoonkim/eDNA/analysis/flower
+raw_data_dir=${work_dir}/raw_data
+processed_data_dir=${work_dir}/processed_data
+results_dir=${work_dir}/results
+tmp_dir=${work_dir}/tmp
+ref_db=/storage2/jihoonkim/eDNA2/DB/cox1.refDB  # Reference DB
+
+# 3. MMseqs2 쿼리 데이터베이스 생성
+echo "==> Creating MMseqs2 database for sample: $sample"
+query_db=${processed_data_dir}/${sample}_queryDB
+mmseqs createdb ${sample}_derep.fasta $query_db
+
+# 4. Taxonomy 결과 경로 설정
+taxonomy_result=${results_dir}/${sample}_taxonomy_result
+tsv_result=${results_dir}/${sample}_taxonomy_result.tsv
+krona_report=${results_dir}/${sample}_krona_report.html
+taxonomy_tmp_dir=${tmp_dir}/${sample}_taxonomy_tmp
+mkdir -p $taxonomy_tmp_dir
+```
 
 
 
