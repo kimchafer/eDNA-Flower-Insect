@@ -826,7 +826,7 @@ echo "Total elapsed time: $((elapsed_time / 60)) minutes and $((elapsed_time % 6
 ├── analysis
 │   ├── A1_filtering.sh
 │   ├── A2_dereplication.sh
-│   ├── A3_dereplication.sh
+│   ├── A3_tax_analysis.sh
 │   ├── processed_data
 │   ├── raw_data
 │   ├── results
