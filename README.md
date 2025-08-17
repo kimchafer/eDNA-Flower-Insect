@@ -560,10 +560,172 @@ mmseqs createtaxdb cox1.refDB tmp --ncbi-tax-dump taxdump/ --tax-mapping-file go
   <details>
     <summary><h3>Taxonomy Analysis</h3></summary>
 
+데이터베이스 구축이 완료되었으면 우리의 샘플 데이터를 동정하고 분류학적 결과를 만들어보자.
+
+우선 편의를 위해 분석 디렉토리에 아래와 같이 하위 디렉토리를 생성한다:
+
+```
+.
+├── analysis
+│   ├── processed_data
+│   ├── raw_data
+│   ├── results
+│   └── tmp
+└── DB
+
+```
+raw_data 디렉토리에는 예시로 본 연구에서 사용된 제주도 벚나무의 eDNA 샘플을 사용하였다.
+제주도 벚나무 총 6개 반복 가운데 2개 반복만이 라이브러리 제작에 이용되었다.  
++PS32  
++PS36  
+```
+.
+├── analysis
+│   ├── processed_data
+│   ├── raw_data
+│   │   ├── S2_PS32_Lib_S66_L001_R1_001.fastq.gz
+│   │   ├── S2_PS32_Lib_S66_L001_R2_001.fastq.gz
+│   │   ├── S2_PS36_Lib_S66_L001_R1_001.fastq.gz
+│   │   └── S2_PS36_Lib_S66_L001_R2_001.fastq.gz
+│   ├── results
+│   └── tmp
+└── DB
+
+```
+Paired-end 데이터이기 때문에 각 샘플별로 두 개의 fastq 파일이 준비되었다.  
+다음 과정은 QC, 어댑터 서열 제거 및 저퀄리티 리드 필터링, Paired-End 데이터 병합, .fastq -> .fasta 변환 과정을 포함하고 있다: `A1_filtering.sh`
+
+```
+#!/bin/bash
+#SBATCH --job-name=filter_merge_fasta        # Job name
+#SBATCH --output=filter_merge_fasta_%j.out   # Standard output
+#SBATCH --error=filter_merge_fasta_%j.err    # Error output
+#SBATCH --time=UNLIMITED                     # No time limit
+#SBATCH -p Node7                             # Partition
+#SBATCH -n 12                                # Number of CPUs
+
+# 샘플 이름 설정
+sample=$1
+if [ -z "$sample" ]; then
+  echo "Error: No sample name provided. Run as: sbatch script_name.sh <sample>"
+  exit 1
+fi
+
+# 작업 시작 시간 기록
+start_time=$(date +%s)
+
+# 디렉토리 설정
+work_dir=/eDNA/analysis
+raw_data_dir=${work_dir}/raw_data
+processed_data_dir=${work_dir}/processed_data
+
+# 1. Raw paired-end 데이터 필터링 (fastp 사용)
+# 아래 코드에서 이름 형식에 관한 부분은 시퀀싱 이후 전달받은 샘플명에 따라 유동적으로 수정
+echo "==> Running fastp for adapter trimming and quality filtering: $sample"
+R1=$(find $raw_data_dir -name "S2_${sample}_Lib_*_R1_001.fastq.gz")
+R2=$(find $raw_data_dir -name "S2_${sample}_Lib_*_R2_001.fastq.gz")
+
+filtered_R1=${processed_data_dir}/${sample}_filtered_R1.fastq.gz
+filtered_R2=${processed_data_dir}/${sample}_filtered_R2.fastq.gz
+html_report=${processed_data_dir}/${sample}_fastp.html
+json_report=${processed_data_dir}/${sample}_fastp.json
+
+fastp -i $R1 -I $R2 \
+      -o $filtered_R1 -O $filtered_R2 \
+      --detect_adapter_for_pe \
+      --qualified_quality_phred 20 \
+      --length_required 100 \
+      -w 16 -h $html_report -j $json_report
+
+if [ $? -ne 0 ]; then
+  echo "Error: fastp failed for sample $sample"
+  exit 1
+fi
+
+# 2. Paired-End 데이터 병합 (PEAR 사용)
+echo "==> Merging filtered paired-end reads for sample: $sample"
+merged_prefix=${processed_data_dir}/${sample}_merged
+
+pear -f $filtered_R1 -r $filtered_R2 -o $merged_prefix -j 8
+
+merged_file=${merged_prefix}.assembled.fastq
+if [ ! -f "$merged_file" ]; then
+  echo "Error: Merged file not found for sample $sample."
+  exit 1
+fi
+
+# 3. FASTQ -> FASTA 변환
+echo "==> Converting FASTQ to FASTA for sample: $sample"
+fasta_file=${processed_data_dir}/${sample}.fasta
+seqtk seq -A $merged_file > $fasta_file
+```
+작업이 정상적으로 완료되었다면 작업 디렉토리 내 파일 구성은 다음과 같다:
+```
+.
+├── analysis
+│   ├── processed_data
+│   │   ├── PS32_fastp.json
+│   │   ├── PS36_fastp.json
+│   │   ├── PS32_filtered_R1.fastq.gz
+│   │   ├── PS32_filtered_R2.fastq.gz
+│   │   ├── PS36_filtered_R1.fastq.gz
+│   │   ├── PS36_filtered_R2.fastq.gz
+│   │   ├── PS32_merged.assembled.fastq
+│   │   ├── PS36_merged.assembled.fastq
+│   │   ├── PS32_merged.discarded.fastq
+│   │   ├── PS36_merged.discarded.fastq
+│   │   ├── PS32_merged.unassembled.forward.fastq
+│   │   ├── PS36_merged.unassembled.forward.fastq
+│   │   ├── PS32_merged.unassembled.reverse.fastq
+│   │   ├── PS36_merged.unassembled.reverse.fastq
+│   │   ├── PS32.fasta
+│   │   └── PS36.fasta
+│   ├── raw_data
+│   ├── results
+│   └── tmp
+└── DB
+```
+두 샘플의 최종 fasta 파일이 PS32.fasta와 PS36.fasta로 생성되었다.  
+둘 다 같은 제주도 벚나무 시료이므로 두 파일을 합쳐준다:
+```
+cat /eDNA/analysis/processed_data/PS32.fasta \
+    /eDNA/analysis/processed_data/PS36.fasta \
+    > /eDNA/analysis/processed_data/PS_JJ.fasta
+```
+작업이 완료되면 작업 디렉토리 내 PS_JJ.fasta가 새로 생성되었다:
+```
+.
+├── analysis
+│   ├── processed_data
+│   │   ├── PS32_fastp.json
+│   │   ...
+│   │   └── PS_JJ.fasta
+│   ├── raw_data
+│   ├── results
+│   └── tmp
+└── DB
+```
+Assembly없이 raw read를 그대로 동정에 사용하는 메타바코딩 특성 상 리드들의 길이와 그에 따른 정보력이 결과에 큰 영향을 미친다.  
+불필요한 짧은 서열을 제거하면서 데이터의 용량을 줄이기 위해 리드들 사이에서 포함관계가 성립하는 경우 짧은 리드를 제거하는 과정을 거친다.  
+길이와 서열 모두 100% 일치하거나 길이가 그보다 짧은 경우에만 제거되며, 해당 코드는 `A2_dereplication.sh`에서 찾아볼 수 있다:  
+
+
+
+
+
+
+
+
   </details>
 
   </div>
 </details>
+
+
+
+
+
+
 
 
 <details>
