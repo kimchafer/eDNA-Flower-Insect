@@ -11,6 +11,9 @@ DB와 분석용 디렉토리를 우선 별개로 생성한다. ('.'으로 표현
 ```
 위 구조를 기본으로하여 아래의 분석 튜토리얼들이 진행된다.
 
+MMseqs2 작성자: Jihoon KIM
+Qimme 2 작성자: 
+
 <details>
   <summary><h3>MMseqs2</h3></summary>
   <div>
@@ -576,8 +579,9 @@ mmseqs createtaxdb cox1.refDB tmp --ncbi-tax-dump taxdump/ --tax-mapping-file go
 ```
 raw_data 디렉토리에는 예시로 본 연구에서 사용된 제주도 벚나무의 eDNA 샘플을 사용하였다.
 제주도 벚나무 총 6개 반복 가운데 2개 반복만이 라이브러리 제작에 이용되었다.  
-+PS32  
-+PS36  
+* PS32  
+* PS36
+<br><br>  
 ```
 .
 ├── analysis
