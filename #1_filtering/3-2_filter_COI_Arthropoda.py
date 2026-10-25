@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 
-# ==========================================================================================================================
+# ==========================================================================================
 # PURPOSE
-#   Filter DADA2-derived ASVs to retain arthropod COI sequences using MMseqs2 taxonomic assignments and nucleotide best hits.
+#   Filter DADA2-derived ASVs to retain arthropod COI sequences
+#   using MMseqs2 taxonomic assignments and nucleotide best hits.
 #
 # ANALYSIS
 #   1. Load MMseqs2 taxonomy assignments and best-hit results.
@@ -16,14 +17,14 @@
 #       : filtering decision and supporting evidence for every ASV
 #   3_mmseqs2_filtering/ASVs.filtered_COI_Arthropoda.fasta
 #       : ASVs passing both Arthropoda and COI filters
-# ==========================================================================================================================
+# ==========================================================================================
 
 import os
 import re
 import pandas as pd
 from Bio import SeqIO
 
-# ==== Paths ====
+# ==== Paths and Output Directories ====
 WORK_DIR = "/storage2/flower_eDNA/analysis/5_20260819_new_pipe"
 
 INPUT_FASTA = f"{WORK_DIR}/2_DADA2/ASVs.nochim.fasta"
@@ -40,16 +41,16 @@ BEST_HIT_TSV = f"{RESULTS_DIR}/ASVs_best_hits.tsv"
 DECISION_TSV = f"{RESULTS_DIR}/ASVs_filter_decisions.tsv"
 FILTERED_FASTA = f"{OUT_DIR}/ASVs.filtered_COI_Arthropoda.fasta"
 
-# ==== Input checks ====
+# ==== Input Checks ====
 for path in [INPUT_FASTA, TAX_TSV, BEST_HIT_TSV]:
     if not os.path.isfile(path) or os.path.getsize(path) == 0:
         raise FileNotFoundError(f"Missing or empty input file: {path}")
 
-# ==== Load input ASVs ====
+# ==== Load Input ASVs ====
 records = list(SeqIO.parse(INPUT_FASTA, "fasta"))
 all_asvs = pd.DataFrame({"query": [r.id for r in records]})
 
-# ==== Load MMseqs2 taxonomy ====
+# ==== Load MMseqs2 Taxonomy Results ====
 tax_cols = ["query", "taxid", "rank", "taxname", "lineage"]
 
 tax = pd.read_csv(
@@ -68,14 +69,14 @@ tax = tax.rename(columns={
     "lineage": "taxonomy_lineage"
 })
 
-# ==== Load MMseqs2 best hits ====
+# ==== Load MMseqs2 Best Hits ====
 best = pd.read_csv(BEST_HIT_TSV, sep="\t", dtype=str)
 
 for col in ["pident", "alnlen", "qcov", "tcov", "evalue", "bits"]:
     if col in best.columns:
         best[col] = pd.to_numeric(best[col], errors="coerce")
 
-# ==== Locus patterns ====
+# ==== Define Locus Annotation Patterns ====
 coi_re = re.compile(
     r"(cytochrome(?:\s+c)?\s+oxidase\s+subunit\s+(?:i|1)\b"
     r"|cytochrome(?:\s+c)?\s+oxidase\s+(?:i|1)\b"
@@ -112,10 +113,11 @@ def locus_status(header):
 
     return "OTHER"
 
-# ==== Merge all information ====
+# ==== Merge Taxonomic and Alignment Information ====
 df = all_asvs.merge(tax, on="query", how="left")
 df = df.merge(best, on="query", how="left")
 
+# ==== Apply Taxonomic and Locus Filters ====
 # Taxonomic filter
 df["taxon_pass"] = df["taxonomy_lineage"].str.contains(
     "Arthropoda",
@@ -141,7 +143,7 @@ def filter_reason(row):
 
 df["filter_reason"] = df.apply(filter_reason, axis=1)
 
-# ==== Write decision table ====
+# ==== Write Filtering Decision Table ====
 cols = [
     "query",
     "taxonomy_taxid",
@@ -172,7 +174,7 @@ df[cols].to_csv(
     index=False
 )
 
-# ==== Export filtered FASTA ====
+# ==== Export Filtered FASTA ====
 passed_ids = set(df.loc[df["final_pass"], "query"])
 filtered_records = [r for r in records if r.id in passed_ids]
 
@@ -214,7 +216,7 @@ print("before accepting the final filtered dataset.")
 
 print("=" * 60)
 
-# ==== Sanity check ====
+# ==== Sanity Check ====
 if len(filtered_records) != int(df["final_pass"].sum()):
     raise RuntimeError(
         "Final PASS count and filtered FASTA record count differ."
