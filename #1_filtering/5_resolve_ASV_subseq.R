@@ -1,6 +1,34 @@
 #!/usr/bin/env Rscript
 
-# ==== Paths ====
+# =========================================================================================================
+# PURPOSE
+#   Detect and resolve exact-subsequence ASVs representing truncated versions of longer COI sequences
+#   while preserving sample-wise read abundances.
+#
+# ANALYSIS
+#   1. Load MACSE-passed ASVs and recover their DADA2 abundances.
+#   2. Search shorter ASVs against longer ASVs for exact forward or reverse-complement subsequence matches.
+#   3. Classify matches as 5'-truncated, 3'-truncated, internal, or exact relationships.
+#   4. Prefer terminal truncations and the nearest longer parent when selecting candidate parents.
+#   5. Merge uniquely resolved child ASVs into their final parent ASVs while retaining ambiguous cases.
+#   6. Verify that total read abundance is preserved.
+#
+# OUTPUT
+#   5_subsequence/ASV_subsequence_matches.tsv
+#       : all detected exact-subsequence relationships
+#   5_subsequence/ASV_subsequence_resolution.tsv
+#       : selected parent-child relationships and merge decisions
+#   5_subsequence/ASVs.subsequence_resolved.fasta
+#       : ASV sequences after subsequence resolution
+#   5_subsequence/ASV_abundance_resolved.tsv
+#       : sample-by-ASV abundance table after merging
+#   5_subsequence/ASV_abundance_resolved.rds
+#       : RDS version of the resolved abundance table
+#   5_subsequence/ASV_subsequence_summary.txt
+#       : summary of subsequence detection and resolution
+# =========================================================================================================
+
+# ==== Paths and Output Files ====
 WORK_DIR <- "/storage2/flower_eDNA/analysis/5_20260819_new_pipe"
 INPUT_FASTA <- file.path(WORK_DIR, "4_MACSE", "ASVs.macse_pass.fasta")
 SEQTAB_RDS <- file.path(WORK_DIR, "2_DADA2", "seqtab.final.rds")
@@ -17,7 +45,7 @@ SUMMARY_OUT <- file.path(OUT_DIR, "ASV_subsequence_summary.txt")
 if (!file.exists(INPUT_FASTA)) stop("Input FASTA not found: ", INPUT_FASTA)
 if (!file.exists(SEQTAB_RDS)) stop("DADA2 seqtab not found: ", SEQTAB_RDS)
 
-# ==== FASTA reader ====
+# ==== FASTA Reader and Sequence Utilities ====
 read_fasta <- function(path) {
   x <- readLines(path)
   h <- which(substr(x, 1, 1) == ">")
@@ -38,7 +66,7 @@ seqs <- read_fasta(INPUT_FASTA)
 ids <- names(seqs)
 lens <- nchar(seqs)
 
-# ==== Recover sample-wise abundance from DADA2 ====
+# ==== Recover Sample-Wise Abundance from DADA2 ====
 seqtab <- readRDS(SEQTAB_RDS)
 dada_ids <- paste0("ASV_", seq_len(ncol(seqtab)))
 names(dada_ids) <- colnames(seqtab)
@@ -57,7 +85,7 @@ dada_seqs <- colnames(seqtab)[keep_idx]
 if (!all(unname(seqs[ids]) == dada_seqs))
   stop("FASTA sequences and DADA2 ASV IDs are inconsistent")
 
-# ==== Find exact subsequences ====
+# ==== Find Exact Subsequence Matches ====
 lengths <- sort(unique(lens))
 matches <- list()
 k <- 0
@@ -123,7 +151,7 @@ match_df <- if (length(matches)) do.call(rbind, matches) else
 
 write.table(match_df, MATCH_OUT, sep="\t", quote=FALSE, row.names=FALSE)
 
-# ==== Resolve candidate parents ====
+# ==== Resolve Candidate Parents ====
 resolution <- list()
 k <- 0
 
@@ -162,7 +190,7 @@ res_df <- if (length(resolution)) do.call(rbind, resolution) else
     orientation=character(), relation=character(), action=character()
   )
 
-# Resolve chains to final parent
+# ==== Resolve Parent Chains ====
 merge_rows <- res_df$action == "merge"
 merge_map <- setNames(res_df$parent_ASV[merge_rows],
                       res_df$child_ASV[merge_rows])
@@ -183,7 +211,7 @@ if (any(merge_rows))
 
 write.table(res_df, RESOLUTION_OUT, sep="\t", quote=FALSE, row.names=FALSE)
 
-# ==== Merge sample-wise abundance ====
+# ==== Merge Sample-Wise Abundance ====
 reads_before <- sum(abund)
 merge_children <- unique(res_df$child_ASV[res_df$action == "merge"])
 
@@ -203,7 +231,7 @@ reads_after <- sum(abund)
 if (reads_before != reads_after)
   stop("Read-count mismatch after subsequence merge")
 
-# ==== Export resolved FASTA and abundance ====
+# ==== Export Resolved FASTA and Abundance Tables ====
 resolved_ids <- colnames(abund)
 
 con <- file(RESOLVED_FASTA, "w")
